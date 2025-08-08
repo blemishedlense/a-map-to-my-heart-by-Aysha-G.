@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Map to Your Heart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --beige: #F5F1EB;
+            --ivory: #FFFFF0;
+            --dusty-rose: #D4A5A5;
+            --sage-green: #9CAF88;
+            --muted-blush: #E6C2C2;
+            --warm-taupe: #C8B5A0;
+            --cream: #FDF6E3;
+            --stone-grey: #A8A5A0;
+            --text-primary: #4A4440;
+            --text-secondary: #6B6560;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--ivory) 0%, var(--cream) 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--warm-taupe) 100%);
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8B5A0' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046 8.954-20 20-20s20 8.954 20 20-8.954 20-20 20-20-8.954-20-20zm0 0c0 11.046-8.954 20-20 20S-10 41.046-10 30s8.954-20 20-20 20 8.954 20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-title {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .header-quote {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            color: var(--sage-green);
+            font-style: italic;
+            padding: 20px;
+            border-left: 3px solid var(--dusty-rose);
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0 8px 8px 0;
+            margin: 30px auto 0;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Navigation */
+        .nav {
+            background: rgba(245, 241, 235, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--warm-taupe);
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--dusty-rose);
+            background: rgba(212, 165, 165, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 60px 0;
+        }
+
+        .chapter {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .chapter.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chapter-title {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .chapter-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--dusty-rose), var(--sage-green));
+            border-radius: 2px;
+        }
+
+        .chapter-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .chapter-content p {
+            margin-bottom: 20px;
+        }
+
+        /* Preface Poem Styling */
+        .preface-poem {
+            background: linear-gradient(135deg, rgba(156, 175, 136, 0.08), rgba(212, 165, 165, 0.08));
+            padding: 40px;
+            border-radius: 20px;
+            border-left: 4px solid var(--dusty-rose);
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .preface-poem::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D4A5A5' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm0 0c0 5.5-4.5 10-10 10S0 25.5 0 20s4.5-10 10-10 10 4.5 10 10z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+            border-radius: 20px;
+        }
+
+        .preface-poem p {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .preface-poem p:last-child {
+            margin-bottom: 0;
+        }
+        .quote {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--sage-green);
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(156, 175, 136, 0.1), rgba(212, 165, 165, 0.1));
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(156, 175, 136, 0.2);
+        }
+
+        .quote:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(156, 175, 136, 0.2);
+            background: linear-gradient(135deg, rgba(156, 175, 136, 0.15), rgba(212, 165, 165, 0.15));
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            color: var(--dusty-rose);
+            opacity: 0.3;
+        }
+
+        .quote::after {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            bottom: -40px;
+            right: 20px;
+            color: var(--dusty-rose);
+            opacity: 0.3;
+        }
+
+        /* Reflections Section */
+        .reflections {
+            background: linear-gradient(135deg, var(--muted-blush) 0%, var(--warm-taupe) 100%);
+            padding: 60px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .reflections-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+        }
+
+        .reflection-quotes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .reflection-quote {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .reflection-quote:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--stone-grey);
+            color: var(--ivory);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .nav-list {
+                gap: 15px;
+                justify-content: center;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+
+            .chapter {
+                margin-bottom: 60px;
+            }
+
+            .quote {
+                padding: 20px;
+                margin: 30px 0;
+            }
+
+            .quote::before,
+            .quote::after {
+                font-size: 3rem;
+            }
+
+            .reflection-quotes {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 40px 0;
+            }
+
+            .main {
+                padding: 40px 0;
+            }
+
+            .quote::before {
+                top: -5px;
+                left: 10px;
+            }
+
+            .quote::after {
+                bottom: -30px;
+                right: 10px;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading Animation */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content fade-in">
+                <h1 class="main-title">A Map to Your Heart</h1>
+                <p class="subtitle">The inner landscape where my dreams, duties, fears, and joys live together</p>
+                <div class="header-quote">
+                    "Every journey begins with a whisper from within."
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="#preface" class="nav-link">Preface</a></li>
+                <li><a href="#who-i-am" class="nav-link">Who I Am</a></li>
+                <li><a href="#inner-compass" class="nav-link">Inner Compass</a></li>
+                <li><a href="#behaviors" class="nav-link">Behaviors</a></li>
+                <li><a href="#desires" class="nav-link">Desires</a></li>
+                <li><a href="#fears" class="nav-link">Fears</a></li>
+                <li><a href="#coping" class="nav-link">Coping</a></li>
+                <li><a href="#support" class="nav-link">Support</a></li>
+                <li><a href="#hobbies" class="nav-link">Hobbies</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <section id="preface" class="chapter">
+                <h2 class="chapter-title">Preface</h2>
+                <div class="chapter-content">
+                    <div class="preface-poem">
+                        <p><em>If you choose to read it,<br>
+                        you are stepping onto my soil.<br>
+                        Tread softly<br>
+                        for these are the paths I have built,<br>
+                        and the ones I am still discovering.</em></p>
+                        
+                        <p><em>Some paths I chose.<br>
+                        Some found me.<br>
+                        Along them, shadows whispered,<br>
+                        light lingered,<br>
+                        and quiet negotiations shaped<br>
+                        the way my heart remembers.</em></p>
+                        
+                        <p><em>This map is not a destination.<br>
+                        It is simply the way I carry myself<br>
+                        through all the places I have been<br>
+                        and all the places still calling my name.</em></p>
+                    </div>
+                </div>
+                <div class="quote">"A single thread can hold the weight of a lifetime."</div>
+                
+                <h2 class="chapter-title" style="margin-top: 60px;">Opening the Map</h2>
+                <div class="chapter-content">
+                    <p>If you could unroll my soul like an old, delicate map, you'd see winding paths, quiet gardens, bustling streets of thoughts, and oceans that hold both storms and still waters. This is my heart, not a perfect place, not a flawless design, but mine.</p>
+                    <p>In the quietest corners of my life, I am not a title, a role, or a label. I am simply me.</p>
+                </div>
+            </section>
+
+            <section id="who-i-am" class="chapter">
+                <h2 class="chapter-title">Who I Am When No One Is Looking</h2>
+                <div class="chapter-content">
+                    <p>Before I became a psychologist, I was simply a human being trying to make sense of people's struggles. Their grief, their confusion, the rare moments of joy, and the quiet despair they carried without words.</p>
+                    <p>I belong to a small village, part of a Syed family. I grew up in a place where life felt limited—where the walls around us were built not of reality, but of inherited beliefs. I often felt confined inside an unfactual bubble, a version of life that didn't align with what I sensed or saw in the world.</p>
+                    <p>Now, in the quietest corners of my life, I am still that girl in the Big City—curious, watchful, unwilling to settle for the surface of things. I am a woman who loves the smell of morning tea in the garden with my husband, when the air is still soft and the day hasn't yet demanded anything from me.</p>
+                </div>
+            </section>
+
+            <section id="inner-compass" class="chapter">
+                <h2 class="chapter-title">My Inner Compass</h2>
+                <div class="chapter-content">
+                    <p><strong>The Id: My Untamed Desires</strong><br>
+                    Inside me, my id is a dreamer. She whispers: "Let's run away to someplace new. Let's write all night. Let's forget the rules for a while." She is reckless and alive, unbothered by consequences.</p>
+                    
+                    <p><strong>The Superego: My Stern but Loving Guide</strong><br>
+                    My superego is the gentle but firm guardian. She reminds me: "Be responsible. Be kind. Do what's right, even when no one is watching."</p>
+                    
+                    <p><strong>The Ego: My Careful Negotiator</strong><br>
+                    And my ego? She is the mediator, the translator of my inner tug-of-war. She smiles at the id and says, "We will travel, but we'll also plan." She looks at the superego and says, "We will be good, but we will also be human."</p>
+                </div>
+                <div class="quote">"Balance is the art of keeping both feet in different worlds."</div>
+            </section>
+
+            <section id="behaviors" class="chapter">
+                <h2 class="chapter-title">Behaviors & The Roads I Walk</h2>
+                <div class="chapter-content">
+                    <p>When I pause to listen to someone fully, it's not just manners. It's the belief that every voice deserves a safe space.</p>
+                    <p>When I work with focus, it's not perfectionism. It's my way of honoring the gift of opportunities I've been given.</p>
+                    <p>When I walk away from chaos, it's not a weakness. It's choosing peace over noise.</p>
+                    <p>I've learned that most of our responses come from places much deeper than logic—rooted in our wounds, our fears, our longings. I try to act from a place of understanding, not reaction.</p>
+                </div>
+                <div class="quote">"Small steps carve great paths."</div>
+            </section>
+
+            <section id="desires" class="chapter">
+                <h2 class="chapter-title">Desires & The Quiet Fire Inside</h2>
+                <div class="chapter-content">
+                    <p>I desire a life that feels soft yet meaningful.</p>
+                    <p>I want to see places that make me feel small in the best way: mountains, oceans, cities I've never walked through. I want to write words that feel like warm blankets to someone else's soul.</p>
+                    <p>To have conversations that feel like campfires. To travel not for photos, but for the way a new place shifts something inside me. To be understood without having to explain every detail.</p>
+                    <p>I desire meaning not just in work, but in relationships, routines, and the small rituals of daily life. I crave genuine connection, the kind where I don't have to explain my pain in perfect words.</p>
+                </div>
+                <div class="quote">"Hope is the quiet compass that never fails."</div>
+            </section>
+
+            <section id="fears" class="chapter">
+                <h2 class="chapter-title">Fears & The Shadows on the Map</h2>
+                <div class="chapter-content">
+                    <p>My deepest fear? Losing people I love and not being able to hold onto moments that mattered. After the death of my father, everything blurred. Colors faded. Life suddenly felt both fragile and fast. I realized nothing is promised. Nothing stays still.</p>
+                    <p>I fear the slow erosion of dreams when life gets too loud with duties. I fear that in chasing "enough," I might miss the beauty of "now."</p>
+                    <p>Time passes too quickly—the way summer evenings fade before you've had enough of them.</p>
+                </div>
+                <div class="quote">"Some storms live inside clear skies."</div>
+            </section>
+
+            <section id="coping" class="chapter">
+                <h2 class="chapter-title">Coping Mechanisms: Defenses I Wear Like Armor</h2>
+                <div class="chapter-content">
+                    <p>My coping mechanisms are quiet. I withdraw. Seek quiet places because silence is healing.</p>
+                    <p>Rationalization: convincing myself "it's fine" when it's not. Intellectualization: turning feelings into analysis when they're too sharp to touch directly.</p>
+                </div>
+                <div class="quote">"Every shield tells the story of a wound."</div>
+            </section>
+
+            <section id="support" class="chapter">
+                <h2 class="chapter-title">Social Support: The Bridges and Anchors</h2>
+                <div class="chapter-content">
+                    <p>My husband, my partner in tea, travel, and heart-to-heart talks. He holds space for me in ways I didn't even know I needed. He doesn't rush to fix things. He listens. He sees me. He is where I exhale.</p>
+                    <p>My son, in ways I can't describe, reflects pieces of me I didn't know were visible. His presence is a mirror. What I struggle to express, he brings to life with his energy.</p>
+                    <p>My family—roots that keep me grounded no matter where I wander. My friends are the ones who understand that sometimes I disappear, but I always come back with love.</p>
+                </div>
+                <div class="quote">"Some hearts are safe harbors."</div>
+            </section>
+
+            <section id="hobbies" class="chapter">
+                <h2 class="chapter-title">Hobbies & Leisure: The Campsites and Rest Stops</h2>
+                <div class="chapter-content">
+                    <p>Quiet coffee moments because even stillness can be a celebration. I watch movies because sometimes stories help me process my own.</p>
+                    <p>I garden in the morning with my husband because tending to life plant by plant reminds me how growth happens slowly, quietly, but surely.</p>
+                </div>
+                <div class="quote">"Joy blooms quietly when the soul is fed."</div>
+            </section>
+        </div>
+    </main>
+
+    <section class="reflections">
+        <div class="container">
+            <h2 class="reflections-title">Reflections on the Journey</h2>
+            <p>If my heart were a map, it would be unfinished—with blank spaces for journeys yet to come. It would have winding roads between dreams and responsibilities, rivers of fear and courage flowing side by side.</p>
+            
+            <div class="reflection-quotes">
+                <div class="reflection-quote">"The cracks let the light learn my name."</div>
+                <div class="reflection-quote">"Not every path deserves a return."</div>
+                <div class="reflection-quote">"My roots run deeper than the storm."</div>
+            </div>
+            
+            <div class="quote" style="margin-top: 40px; background: rgba(255,255,255,0.3);">
+                "Some maps are meant to be drawn in motion."
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>This is my map. It's imperfect, evolving, and deeply mine.</p>
+                <p style="margin-top: 10px; font-style: italic;">© A Map to Your Heart by Aysha Gellani</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling and intersection observer for animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const chapters = document.querySelectorAll('.chapter');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            chapters.forEach(chapter => {
+                observer.observe(chapter);
+            });
+
+            // Add gentle animation to quotes on hover
+            const quotes = document.querySelectorAll('.quote, .reflection-quote');
+            quotes.forEach(quote => {
+                quote.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                quote.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Smooth navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const offsetTop = targetElement.offsetTop - 100;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
